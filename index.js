@@ -63,6 +63,34 @@ class Paper {
     });
   }
 }
+let isDragging = false;
+    let initialX, initialY, initialPaperX, initialPaperY;
+
+    paper.addEventListener('touchstart', (e) => {
+      isDragging = true;
+      initialX = e.changedTouches[0].clientX;
+      initialY = e.changedTouches[0].clientY;
+      initialPaperX = paper.style.left || 0;
+      initialPaperY = paper.style.top || 0;
+    });
+
+    paper.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+
+      const deltaX = e.changedTouches[0].clientX - initialX;
+      const deltaY = e.changedTouches[0].clientY - initialY;
+
+      // Update paper position with constraints (adjust logic as needed)
+      const left = Math.max(0, Math.min(window.innerWidth - paper.offsetWidth, initialPaperX + deltaX));
+      const top = Math.max(0, Math.min(window.innerHeight - paper.offsetHeight, initialPaperY + deltaY));
+
+      paper.style.left = `${left}px`;
+      paper.style.top = `${top}px`;
+    });
+
+    paper.addEventListener('touchend', () => {
+      isDragging = false;
+    });
 const papers = Array.from(document.querySelectorAll('.paper'));
 papers.forEach(paper => {
   const p = new Paper();
